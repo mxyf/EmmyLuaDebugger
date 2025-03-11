@@ -93,6 +93,7 @@ public:
 	// Start hook 作为成员存在
 	std::function<void()> StartHook;
 
+	std::vector<std::string> skipFilename;
 private:
 	std::mutex waitIDEMutex;
 	std::condition_variable waitIDECV;

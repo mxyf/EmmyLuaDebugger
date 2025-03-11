@@ -98,11 +98,24 @@ void HookStateStepIn::ProcessHook(std::shared_ptr<Debugger> debugger, lua_State*
 	UpdateStackLevel(debugger, L, ar);
 	if (getDebugEvent(ar) == LUA_HOOKLINE)
 	{
+		lua_getinfo(L, "nSl", ar);
 		auto currentLine = getDebugCurrentLine(ar);
 		auto source = getDebugSource(ar);
+		bool is_break = false;
+		bool not_in = false;
+		bool flag = false;
 		if(currentLine != line || file != source)
 		{
-			debugger->HandleBreak();
+			flag = true;
+		}
+		if(flag)
+		{
+			is_break = debugger->HandleBreak();
+		}else{
+			not_in = true;
+		}
+		if(is_break || not_in){
+			return;
 		}
 		return;
 	}
@@ -123,7 +136,9 @@ void HookStateStepOut::ProcessHook(std::shared_ptr<Debugger> debugger, lua_State
 	UpdateStackLevel(debugger, L, ar);
 	if (newStackLevel < oriStackLevel)
 	{
-		debugger->HandleBreak();
+		if(
+			debugger->HandleBreak()
+		) 
 		return;
 	}
 	StackLevelBasedState::ProcessHook(debugger, L, ar);
@@ -148,7 +163,10 @@ void HookStateStepOver::ProcessHook(std::shared_ptr<Debugger> debugger, lua_Stat
 	// step out
 	if (newStackLevel < oriStackLevel)
 	{
-		debugger->HandleBreak();
+		if(
+				debugger->HandleBreak()
+				) 
+			return;
 		return;
 	}
 
@@ -161,7 +179,9 @@ void HookStateStepOver::ProcessHook(std::shared_ptr<Debugger> debugger, lua_Stat
 
 		if (getDebugSource(ar) == file || line == -1)
 		{
-			debugger->HandleBreak();
+			if(
+				debugger->HandleBreak()
+				) 
 			return;
 		}
 	}

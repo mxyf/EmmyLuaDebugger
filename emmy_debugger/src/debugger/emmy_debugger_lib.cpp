@@ -28,6 +28,17 @@ int tcpListen(struct lua_State* L)
 	const auto port = lua_tointeger(L, 2);
 	const auto suc = EmmyFacade::Get().TcpListen(L, host, static_cast<int>(port), err);
 	lua_pushboolean(L, suc);
+	std::vector<std::string>& skipFilename = EmmyFacade::Get().skipFilename;
+	if (lua_gettop(L) >= 3) {
+        if (lua_istable(L, 3)) {
+            int len = lua_objlen(L, 3);
+            for (int i = 1; i <= len; ++i) {
+                lua_rawgeti(L, 3, i);
+                skipFilename.push_back(lua_tostring(L, -1));
+                lua_pop(L, 1);
+            }
+        }
+	}
 	if (suc) return 1;
 	lua_pushstring(L, err.c_str());
 	return 2;

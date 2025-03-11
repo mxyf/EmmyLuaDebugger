@@ -63,6 +63,7 @@ int LUA_REGISTRYINDEX = 0;
 int LUA_GLOBALSINDEX = 0;
 
 IMP_LUA_API(lua_gettop);
+IMP_LUA_API(lua_objlen);
 IMP_LUA_API(lua_settop);
 IMP_LUA_API(lua_type);
 IMP_LUA_API(lua_typename);
@@ -416,6 +417,7 @@ void lua_insert(lua_State* L, int idx)
 extern "C" bool SetupLuaAPI()
 {
 	LOAD_LUA_API(lua_gettop);
+	LOAD_LUA_API(lua_objlen);
 	LOAD_LUA_API(lua_settop);
 	LOAD_LUA_API(lua_type);
 	LOAD_LUA_API(lua_typename);

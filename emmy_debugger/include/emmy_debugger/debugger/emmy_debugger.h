@@ -76,7 +76,7 @@ public:
 	void ExitDebugMode();
 	void ExecuteWithSkipHook(const Executor& exec);
 	void ExecuteOnLuaThread(const Executor& exec);
-	void HandleBreak();
+	bool HandleBreak();
 	int GetStackLevel(bool skipC) const;
 	/*
 	 * 更新hook

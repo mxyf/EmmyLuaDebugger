@@ -250,6 +250,8 @@ extern int LUA_REGISTRYINDEX;
 
 typedef int (*dll_lua_gettop)(lua_State* L);
 DEF_LUA_API(lua_gettop);
+typedef int (*dll_lua_objlen)(lua_State* L, int idx);
+DEF_LUA_API(lua_objlen);
 typedef void (*dll_lua_settop)(lua_State* L, int idx);
 DEF_LUA_API(lua_settop);
 typedef int (*dll_lua_type)(lua_State* L, int idx);

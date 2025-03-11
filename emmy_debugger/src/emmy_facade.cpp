@@ -257,6 +257,23 @@ void EmmyFacade::OnReceiveMessage(nlohmann::json document) {
 	_protoHandler.OnDispatch(document);
 }
 
+bool isSuffixMatch(const std::string& str, const std::string& suffix) {
+    if (str.empty() || suffix.empty()) {
+        return false;
+    }
+
+    size_t pos = str.find_last_of('/');
+    std::string lastPart;
+
+    if (pos != std::string::npos) {
+        lastPart = str.substr(pos + 1);
+    } else {
+        lastPart = str;
+    }
+
+    return lastPart == suffix;
+}
+
 bool EmmyFacade::OnBreak(std::shared_ptr<Debugger> debugger) {
 	if (!debugger) {
 		return false;
@@ -266,6 +283,12 @@ bool EmmyFacade::OnBreak(std::shared_ptr<Debugger> debugger) {
 	_emmyDebuggerManager.SetHitDebugger(debugger);
 
 	debugger->GetStacks(stacks);
+	for (const auto& str : skipFilename) {
+        if (isSuffixMatch(stacks[0].file, str) ){
+			return false;
+		}
+    }
+	
 
 	auto obj = nlohmann::json::object();
 	obj["cmd"] = static_cast<int>(MessageCMD::BreakNotify);

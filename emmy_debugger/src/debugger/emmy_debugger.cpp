@@ -108,7 +108,7 @@ void Debugger::Hook(lua_Debug *ar, lua_State *L) {
 		}
 		auto bp = FindBreakPoint(ar);
 		if (bp && ProcessBreakPoint(bp)) {
-			HandleBreak();
+			if(HandleBreak())
 			return;
 		}
 		// 加锁
@@ -642,13 +642,15 @@ std::string Debugger::GetFile(lua_Debug *ar) const {
 	return file;
 }
 
-void Debugger::HandleBreak() {
+bool Debugger::HandleBreak() {
 	// to be on the safe side, hook it again
 	UpdateHook(LUA_MASKCALL | LUA_MASKLINE | LUA_MASKRET, currentL);
 
 	if (EmmyFacade::Get().OnBreak(shared_from_this())) {
 		EnterDebugMode();
+		return true;
 	}
+	return false;
 }
 
 // host thread
