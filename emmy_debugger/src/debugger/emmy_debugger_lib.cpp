@@ -29,6 +29,7 @@ int tcpListen(struct lua_State* L)
 	const auto suc = EmmyFacade::Get().TcpListen(L, host, static_cast<int>(port), err);
 	lua_pushboolean(L, suc);
 	std::vector<std::string>& skipFilename = EmmyFacade::Get().skipFilename;
+	skipFilename.clear();
 	if (lua_gettop(L) >= 3) {
         if (lua_istable(L, 3)) {
             int len = lua_objlen(L, 3);
